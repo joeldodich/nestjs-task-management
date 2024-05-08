@@ -20,11 +20,17 @@ export class TasksService {
         return task;
     }
 
-    getTaskById(id: string): Task {
+    getTaskById(id: Task['id']): Task {
         return this.tasks.find(task => task.id === id);
     }
 
-    deleteTask(id: string): void {
+    deleteTask(id: Task['id']): void {
         this.tasks = this.tasks.filter(task => task.id !== id);
+    }
+
+    updateTaskStatus(id: Task['id'], status: TaskStatus): Task {
+        const task = this.getTaskById(id);
+        task.status = status;
+        return task;
     }
 }
