@@ -1,12 +1,6 @@
-import * as mongoose from 'mongoose';
+import { Document } from "mongoose";
 
-export const TaskSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  status: String,
-});
-
-export interface Task extends mongoose.Document {
+export interface Task extends Document {
   id: string;
   title: string;
   description: string;
