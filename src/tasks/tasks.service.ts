@@ -11,13 +11,10 @@ export class TasksService {
   constructor(@InjectModel('Task') private readonly taskModel: Model<Task>) {}
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    // const task: Task = {
-    //   id: uuid4(),
-    //   ...createTaskDto,
-    //   status: TaskStatus.OPEN,
-    // };
-    // this.tasks.push(task);
-    const task = new this.taskModel(createTaskDto);
+    const task = new this.taskModel({
+      ...createTaskDto,
+      status: TaskStatus.OPEN,
+    });
     return await task.save();
   }
 
@@ -38,14 +35,21 @@ export class TasksService {
         .exec();
     }
 
-    //combine the two arrays into one and remove duplicates based on the id as key
-    return [...statusTasks, ...searchTasks].filter(
-      (task, index, self) => index === self.findIndex((t) => t.id === task.id),
-    );
+    if (!statusTasks && !searchTasks) {
+      return [];
+    } else if (!statusTasks) {
+      return searchTasks;
+    } else if (!searchTasks) {
+      return statusTasks;
+    } else {
+      return [...statusTasks, ...searchTasks].filter(
+        (task, index, self) =>
+          index === self.findIndex((t) => t.id === task.id),
+      );
+    }
   }
 
   async getTaskById(id: Task['id']): Promise<Task> {
-    // const found = this.tasks.find((task) => task.id === id);
     const found = await this.taskModel.findById(id).exec();
     if (!found) {
       throw new NotFoundException(`Task with ID of ${id} does not exist.`);
@@ -54,7 +58,6 @@ export class TasksService {
   }
 
   async updateTaskStatus(id: Task['id'], status: TaskStatus): Promise<Task> {
-    // const task = this.getTaskById(id);
     const task = await this.taskModel
       .findOneAndUpdate({ _id: id }, { status }, { new: true })
       .exec();
