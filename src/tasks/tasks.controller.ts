@@ -18,8 +18,13 @@ import { TasksService } from './tasks.service';
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
+  @Post()
+  async createTask(@Body() createTaskPayload: CreateTaskDto): Promise<Task> {
+    return this.tasksService.createTask(createTaskPayload);
+  }
+
   @Get()
-  getTasks(@Query() tasksFilter: GetTasksFilterDto): Task[] {
+  async getTasks(@Query() tasksFilter: GetTasksFilterDto): Promise<Task[]> {
     if (Object.keys(tasksFilter).length) {
       return this.tasksService.getTasksWithFilters(tasksFilter);
     } else {
@@ -27,27 +32,22 @@ export class TasksController {
     }
   }
 
-  @Post()
-  createTask(@Body() createTaskPayload: CreateTaskDto): Task {
-    return this.tasksService.createTask(createTaskPayload);
-  }
-
   @Get('/:id')
-  getTaskById(@Param('id') id: Task['id']): Task {
+  async getTaskById(@Param('id') id: Task['id']): Promise<Task> {
     return this.tasksService.getTaskById(id);
   }
 
   @Delete('/:id')
-  deleteTask(@Param('id') id: Task['id']): void {
+  async deleteTask(@Param('id') id: Task['id']) {
     return this.tasksService.deleteTask(id);
   }
 
   @Patch('/:id')
-  updateTaskStatus(
+  async updateTaskStatus(
     @Param('id') id: Task['id'],
     @Body() statusUpdatePayload: UpdateTaskStatusDto,
-  ): Task {
+  ): Promise<Task> {
     const { status } = statusUpdatePayload;
-    return this.tasksService.updateTaskStatus(id, status);
+    return await this.tasksService.updateTaskStatus(id, status);
   }
 }
