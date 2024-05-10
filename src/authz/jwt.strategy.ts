@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { GetUsers200ResponseOneOfInner } from 'auth0';
 import { passportJwtSecret } from 'jwks-rsa';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { User } from 'src/users/user.model';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -24,16 +24,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload): Promise<GetUsers200ResponseOneOfInner> {
+  async validate(payload: JwtPayload): Promise<User['_id']> {
     const { sub } = payload;
-    let user: GetUsers200ResponseOneOfInner;
-    try {
-      const res = await this.userService.getUserById(sub);
-      user = res.data;
-    } catch (error) {
-      throw new Error('Incorrect token payload');
-    }
-    return user;
+    let userId: User['_id'];
+    const user = await this.userService.syncWithAuth0(sub);
+    userId = user._id;
+    return userId;
   }
 
   // validate(payload: JwtPayload) {

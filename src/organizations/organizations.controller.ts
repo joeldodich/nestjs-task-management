@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUsers200ResponseOneOfInner } from 'auth0';
 import { AuthorizedUser } from 'src/authz/authorizedUser.decorator';
+import { User } from 'src/users/user.model';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { OrganizationsService } from './organizations.service';
 
@@ -18,11 +18,11 @@ export class OrganizationsController {
   @Post()
   createOrganization(
     @Body() createOrganizationDto: CreateOrganizationDto,
-    @AuthorizedUser() creator: GetUsers200ResponseOneOfInner,
+    @AuthorizedUser() creator: User,
   ) {
     return this.organizationService.createOrganization(
       createOrganizationDto,
-      creator.user_id,
+      creator._id,
     );
   }
 }
