@@ -6,6 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
+    // constructor(private userService: UsersService) {
     super({
       secretOrKeyProvider: passportJwtSecret({
         cache: true,
@@ -21,8 +22,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: JwtPayload): JwtPayload {
-    return payload;
+  // async validate(payload: JwtPayload): Promise<GetUsers200ResponseOneOfInner> {
+  //   const { sub } = payload;
+  //   let user: GetUsers200ResponseOneOfInner;
+  //   try {
+  //     const res = await this.userService.getUserById(sub);
+  //     user = res.data;
+  //   } catch (error) {
+  //     throw new Error('Incorrect token payload');
+  //   }
+  //   return user;
+  // }
+
+  validate(payload: JwtPayload) {
+    const { sub } = payload;
+    return sub;
   }
 }
 

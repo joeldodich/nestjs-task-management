@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthzModule } from './authz/authz.module';
+import { OrganizationsModule } from './organizations/organizations.module';
 import { TasksModule } from './tasks/tasks.module';
 import { UsersModule } from './users/users.module';
 
@@ -16,6 +17,7 @@ import { UsersModule } from './users/users.module';
     ),
     AuthzModule,
     UsersModule,
+    OrganizationsModule,
   ],
 })
 export class AppModule {}
