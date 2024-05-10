@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import { GetUsers200ResponseOneOfInner } from 'auth0';
 import { passportJwtSecret } from 'jwks-rsa';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
-    // constructor(private userService: UsersService) {
+  // constructor() {
+  constructor(private userService: UsersService) {
     super({
       secretOrKeyProvider: passportJwtSecret({
         cache: true,
@@ -22,22 +24,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // async validate(payload: JwtPayload): Promise<GetUsers200ResponseOneOfInner> {
-  //   const { sub } = payload;
-  //   let user: GetUsers200ResponseOneOfInner;
-  //   try {
-  //     const res = await this.userService.getUserById(sub);
-  //     user = res.data;
-  //   } catch (error) {
-  //     throw new Error('Incorrect token payload');
-  //   }
-  //   return user;
-  // }
-
-  validate(payload: JwtPayload) {
+  async validate(payload: JwtPayload): Promise<GetUsers200ResponseOneOfInner> {
     const { sub } = payload;
-    return sub;
+    let user: GetUsers200ResponseOneOfInner;
+    try {
+      const res = await this.userService.getUserById(sub);
+      user = res.data;
+    } catch (error) {
+      throw new Error('Incorrect token payload');
+    }
+    return user;
   }
+
+  // validate(payload: JwtPayload) {
+  //   const { sub } = payload;
+  //   return sub;
+  // }
 }
 
 interface JwtPayload {
