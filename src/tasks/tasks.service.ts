@@ -42,12 +42,12 @@ export class TasksService {
     } else {
       return [...statusTasks, ...searchTasks].filter(
         (task, index, self) =>
-          index === self.findIndex((t) => t.id === task.id),
+          index === self.findIndex((t) => t._id === task._id),
       );
     }
   }
 
-  async getTaskById(id: Task['id']): Promise<Task> {
+  async getTaskById(id: Task['_id']): Promise<Task> {
     const found = await this.taskModel.findById(id).exec();
     if (!found) {
       throw new NotFoundException(`Task with ID of ${id} does not exist.`);
@@ -55,14 +55,14 @@ export class TasksService {
     return found;
   }
 
-  async updateTaskStatus(id: Task['id'], status: TaskStatus): Promise<Task> {
+  async updateTaskStatus(id: Task['_id'], status: TaskStatus): Promise<Task> {
     const task = await this.taskModel
-      .findOneAndUpdate({ _id: id }, { status }, { new: true })
+      .findOneAndUpdate({ id }, { status }, { new: true })
       .exec();
     return task;
   }
 
-  deleteTask(id: Task['id']) {
-    return this.taskModel.deleteOne({ _id: id }).exec();
+  deleteTask(id: Task['_id']) {
+    return this.taskModel.deleteOne({ id }).exec();
   }
 }
