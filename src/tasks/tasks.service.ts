@@ -6,8 +6,6 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { Task, TaskStatus } from './task.model';
 @Injectable()
 export class TasksService {
-  private tasks: Task[] = [];
-
   constructor(@InjectModel('Task') private readonly taskModel: Model<Task>) {}
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
