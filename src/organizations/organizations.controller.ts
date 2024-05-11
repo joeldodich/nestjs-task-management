@@ -18,11 +18,11 @@ export class OrganizationsController {
   @Post()
   createOrganization(
     @Body() createOrganizationDto: CreateOrganizationDto,
-    @AuthorizedUser() creator: User,
+    @AuthorizedUser() creatorId: User['_id'],
   ) {
     return this.organizationService.createOrganization(
       createOrganizationDto,
-      creator._id,
+      creatorId,
     );
   }
 }
