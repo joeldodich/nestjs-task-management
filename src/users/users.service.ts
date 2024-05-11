@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ManagementClient } from 'auth0';
 import { Model } from 'mongoose';
@@ -20,7 +20,15 @@ export class UsersService {
   }
 
   async getUserById(id: string): Promise<User> {
-    return await this.userModel.findById(id);
+    const found =  await this.userModel.findById(id);
+    if (!found) {
+      throw new NotFoundException(`User with ID of ${id} does not exist.`);
+    }
+    return found;
+  }
+
+  async findUsersByIds(ids: string[]): Promise<User[]> {
+    return await this.userModel.find({ _id: { $in: ids } });
   }
 
   /**
@@ -29,7 +37,11 @@ export class UsersService {
    * @returns A full user object from the Auth0 Management API
    */
   async getUserByAuth0Sub(sub: string): Promise<User> {
-    return await this.userModel.findOne({ sub });
+    const found = await this.userModel.findOne({ sub });
+    if (!found) {
+      throw new NotFoundException(`User with sub of ${sub} does not exist.`);
+    }
+    return found;
   }
 
   async getAuth0User(id: string) {
@@ -38,7 +50,6 @@ export class UsersService {
 
   async syncWithAuth0(sub: string): Promise<User> {
     const user = await this.getUserByAuth0Sub(sub);
-    console.log('user', user);
     if (user) return user;
     const createdUser = await this.createUser(sub);
     return createdUser;

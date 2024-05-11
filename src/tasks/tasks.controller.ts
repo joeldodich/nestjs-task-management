@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { OrgGuard } from 'src/authz/organization.guard';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
@@ -27,7 +28,7 @@ export class TasksController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), OrgGuard)
   async getTasks(@Query() tasksFilter: GetTasksFilterDto): Promise<Task[]> {
     if (Object.keys(tasksFilter).length) {
       return this.tasksService.getTasksWithFilters(tasksFilter);
