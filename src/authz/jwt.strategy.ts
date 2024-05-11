@@ -5,9 +5,18 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from 'src/users/user.model';
 import { UsersService } from 'src/users/users.service';
 
+
+interface JwtPayload {
+  iss: string;
+  sub: string;
+  aud: string;
+  iat: number;
+  exp: number;
+  gty: string;
+  azp: string;
+}
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  // constructor() {
   constructor(private userService: UsersService) {
     super({
       secretOrKeyProvider: passportJwtSecret({
@@ -24,26 +33,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload): Promise<User['_id']> {
+  async validate(payload: JwtPayload): Promise<User> {
     const { sub } = payload;
-    let userId: User['_id'];
-    const user = await this.userService.syncWithAuth0(sub);
-    userId = user._id;
-    return userId;
+    return await this.userService.getUserById(sub);
   }
-
-  // validate(payload: JwtPayload) {
-  //   const { sub } = payload;
-  //   return sub;
-  // }
-}
-
-interface JwtPayload {
-  iss: string;
-  sub: string;
-  aud: string;
-  iat: number;
-  exp: number;
-  gty: string;
-  azp: string;
 }

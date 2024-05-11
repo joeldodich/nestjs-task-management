@@ -2,9 +2,9 @@ import { Schema } from 'mongoose';
 
 export const OrganizationSchema = new Schema({
   name: String,
-  owner: Schema.Types.ObjectId,
+  owner: String,
   createdAt: Date,
   createdBy: String,
-  members: [Schema.Types.ObjectId],
+  members: [String],
   tasks: [Schema.Types.ObjectId],
 });

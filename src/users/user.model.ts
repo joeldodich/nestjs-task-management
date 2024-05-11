@@ -1,7 +1,9 @@
-import { UserIdentity } from 'auth0';
-import { Document } from 'mongoose';
-
-export interface User extends Document {
-  _id: string;
-  sub: UserIdentity['user_id'];
+export class User {
+  id: string;
+  name: string;
+  email: string;
+  email_verified: boolean;
+  locale: string;
+  picture: string;
+  updated_at: string;
 }
