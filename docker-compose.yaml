@@ -48,10 +48,9 @@ services:
     container_name: migrate
     networks:
       - openfga
+    env_file:
+      - ./haimdal/.env.local
     command: migrate
-    environment:
-      - OPENFGA_DATASTORE_ENGINE=postgres
-      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
 
   openfga:
     depends_on:
@@ -61,11 +60,8 @@ services:
     container_name: openfga
     networks:
       - openfga
-    environment:
-      - OPENFGA_DATASTORE_ENGINE=postgres
-      - OPENFGA_DATASTORE_URI=postgres://postgres:password@postgres:5432/postgres?sslmode=disable
-      - OPENFGA_LOG_FORMAT=json
-      - OPENFGA_PLAYGROUND_ENABLED=false
+    env_file:
+      - ./haimdal/.env.local
     command: run
     ports:
       # Needed for the http server
@@ -73,4 +69,8 @@ services:
       # Needed for the grpc server (if used)
       - '8081:8081'
       # Needed for the playground (Do not enable in prod!)
-      #- '3000:3001'
+      - '3001:3001'
+
+  # openfga-cli:
+  #   image: openfga/cli
+  #   container_name: openfga-cli
