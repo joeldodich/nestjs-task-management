@@ -6,6 +6,7 @@ import { configValidationSchema } from './config.schema';
 import { OrganizationsModule } from './organizations/organizations.module';
 import { TasksModule } from './tasks/tasks.module';
 import { UsersModule } from './users/users.module';
+import { SampleModule } from './sample/sample.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UsersModule } from './users/users.module';
     AuthzModule,
     UsersModule,
     OrganizationsModule,
+    SampleModule,
   ],
 })
 export class AppModule {}
