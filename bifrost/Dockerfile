@@ -1,4 +1,4 @@
-FROM node:alpine as development
+FROM node:alpine as local
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
@@ -11,7 +11,7 @@ ENV NODE_ENV=${NODE_ENV}
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install --production
-COPY --from=development /usr/src/app/dist ./dist
+COPY --from=local /usr/src/app/dist ./dist
 CMD ["node", "dist/main"]
 
 

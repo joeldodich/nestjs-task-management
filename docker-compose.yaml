@@ -14,15 +14,16 @@ services:
       - openfga
       - core
     build:
-      context: .
-      dockerfile: ./bifrost/Dockerfile
-      target: development
+      context: ./bifrost
+      dockerfile: Dockerfile
+      target: local # Need environment variable for this
     command: npm run start:debug
-    env_file: ./.env.local
+    env_file: ./bifrost/.env.local
     ports:
       - 3000:3000
     volumes:
-      - .:/usr/src/app
+      - ./bifrost:/usr/src/app
+      - /usr/src/app/node_modules
 
   postgres:
     image: postgres:14
@@ -48,8 +49,7 @@ services:
     container_name: migrate
     networks:
       - openfga
-    env_file:
-      - ./haimdal/.env.local
+    env_file: ./haimdal/.env.local
     command: migrate
 
   openfga:
@@ -60,8 +60,7 @@ services:
     container_name: openfga
     networks:
       - openfga
-    env_file:
-      - ./haimdal/.env.local
+    env_file: ./haimdal/.env.local
     command: run
     ports:
       # Needed for the http server
