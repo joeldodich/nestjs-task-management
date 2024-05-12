@@ -40,6 +40,8 @@ export class OrganizationsService {
     return organization;
   }
 
+  async 
+
   async listMembers(id: Organization['_id']): Promise<User[]> {
     const organization = await this.organizationModel.findById(id);
     if (!organization) {
