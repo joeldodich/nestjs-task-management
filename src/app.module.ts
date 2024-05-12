@@ -4,9 +4,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthzModule } from './authz/authz.module';
 import { configValidationSchema } from './config.schema';
 import { OrganizationsModule } from './organizations/organizations.module';
+import { SampleModule } from './sample/sample.module';
 import { TasksModule } from './tasks/tasks.module';
 import { UsersModule } from './users/users.module';
-import { SampleModule } from './sample/sample.module';
 
 @Module({
   imports: [
@@ -15,9 +15,7 @@ import { SampleModule } from './sample/sample.module';
       validationSchema: configValidationSchema,
     }),
     TasksModule,
-    MongooseModule.forRoot(
-      'mongodb+srv://joeledodich:kv8c6IKAUjC8adlx@cluster0.81zgsu7.mongodb.net/',
-    ),
+    MongooseModule.forRoot(process.env.MONGODB_URI),
     AuthzModule,
     UsersModule,
     OrganizationsModule,
