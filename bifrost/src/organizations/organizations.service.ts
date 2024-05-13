@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { RebacService } from 'src/rebac/rebac.service';
 import { User } from 'src/users/user.model';
 import { UsersService } from 'src/users/users.service';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
@@ -14,7 +13,6 @@ export class OrganizationsService {
     private readonly organizationModel: Model<Organization>,
 
     private userService: UsersService,
-    private rebacService: RebacService,
   ) {}
 
   async create(
@@ -30,9 +28,8 @@ export class OrganizationsService {
       createdBy: creatorId,
       updatedAt: createdAt,
     };
-    const organization = new this.organizationModel(payload);
-    
-    return await organization.save();
+    const newOrganization = new this.organizationModel(payload);
+    return await newOrganization.save();
   }
 
   async findAll(id: Organization['_id']): Promise<User[]> {
