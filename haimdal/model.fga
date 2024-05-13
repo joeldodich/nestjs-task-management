@@ -1,0 +1,61 @@
+model
+  schema 1.1
+
+type user
+
+type organization
+  relations
+    define member: [user]
+    define owner: [user] and member
+    define admin: ([user] and member) or owner
+    define editor: ([user] and member) or admin or owner
+    define viewer: ([user] and member) or admin or owner or editor
+    define can_modify_subscription: owner or admin
+    define can_modify_platform_access: owner or admin or editor
+    # TODO: NEED TO DETERMINE HOW TO ENSURE THERE IS ALWAYS AN OWNER
+    define can_modify_organization_access: owner or admin or editor
+    define can_transfer_ownership: owner
+    # TODO: ENFOCE THAT DEFAULT INVITE IS VIEWER
+    define can_invite_members: owner or admin or editor or viewer
+    define can_update_profile: owner or admin or editor
+
+type hub
+  relations
+    # TODO: Enfore that there can only be two members
+    define member: [organization#member]
+
+type group
+  relations
+    define owner: [organization]
+    define manager: [user]
+    define member: [user] or manager
+    
+
+type part
+  relations
+    #TODO: Enforce who can get access (people from parent organization or people who are partners with the parent organization)?
+    define owner: [organization]
+    define editor: [user, group#member, hub#member, organization#member]
+    define contributor: [user, group#member, hub#member, organization#member] or editor
+    define collaborator: [user, group#member, hub#member, organization#member] or contributor or editor
+    define distributor: ([user, group#member, hub#member, organization#member] and contributor) or editor
+    define modifier: ([user, group#member, hub#member, organization#member] and contributor) or editor
+    define admin: editor and (member from owner)
+    define viewer: editor or contributor or collaborator
+    define can_transfer_ownership: admin
+    define can_delete: admin
+    define can_share: distributor
+    define can_manage_design_files: modifier
+    define can_modify_metadata: modifier 
+
+type feedback
+  relations
+    define parent: [part]
+    define recipient: [group#member, hub#member]
+    define sender: [user]
+    define reply_blocked: [user, group#member, hub#member]
+    define can_view: viewer from parent
+    define can_edit: sender and (viewer from parent)
+    define can_delete: sender and (viewer from parent)
+    define can_resolve: can_view
+    define can_reply: can_view but not reply_blocked
