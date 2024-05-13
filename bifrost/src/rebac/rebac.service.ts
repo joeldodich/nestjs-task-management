@@ -1,10 +1,9 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { ClientWriteSingleResponse, OpenFgaClient, TupleKey, } from '@openfga/sdk';
-// import {
-//   ClientWriteSingleResponse,
-//   OpenFgaClient,
-//   TupleKey,
-// } from '@openfga/sdk';
+import {
+  ClientWriteSingleResponse,
+  OpenFgaClient,
+  TupleKey,
+} from '@openfga/sdk';
 
 @Injectable()
 export class RebacService {
@@ -23,7 +22,6 @@ export class RebacService {
     // }
   });
 
-  // @ts-ignore 
   async can(
     user: string,
     relation: string,
@@ -37,20 +35,32 @@ export class RebacService {
   async createRelations(
     relationshipTouples: TupleKey[],
   ): Promise<ClientWriteSingleResponse[]> {
-    const res = await this.openfga.write({ writes: relationshipTouples });
-    if (res.writes[0].err) {
-      throw new InternalServerErrorException('Error authorizing request.');
+    try {
+      const res = await this.openfga.write({ writes: relationshipTouples });
+      if (res.writes[0].err) {
+        throw new InternalServerErrorException('Error authorizing request.');
+      }
+      return res.writes;
+    } catch (e) {
+      throw new InternalServerErrorException('Error authorizing request.', {
+        description: e.message,
+      });
     }
-    return res.writes;
   }
 
   async removeRelations(
     relationshipTouples: TupleKey[],
   ): Promise<ClientWriteSingleResponse[]> {
-    const res = await this.openfga.write({ deletes: relationshipTouples });
-    if (res.deletes[0].err) {
-      throw new InternalServerErrorException('Error authorizing request.');
+    try {
+      const res = await this.openfga.write({ deletes: relationshipTouples });
+      if (res.deletes[0].err) {
+        throw new InternalServerErrorException('Error authorizing request.');
+      }
+      return res.deletes;
+    } catch (e) {
+      throw new InternalServerErrorException('Error authorizing request.', {
+        description: e.message,
+      });
     }
-    return res.deletes;
   }
 }
