@@ -20,9 +20,6 @@ export class OrganizationsController {
     @Body() createOrganizationDto: CreateOrganizationDto,
     @AuthorizedUser() creator: User,
   ) {
-    return this.organizationService.createOrganization(
-      createOrganizationDto,
-      creator.id,
-    );
+    return this.organizationService.create(createOrganizationDto, creator.id);
   }
 }

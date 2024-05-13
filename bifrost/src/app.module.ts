@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthzModule } from './authz/authz.module';
 import { configValidationSchema } from './config.schema';
 import { OrganizationsModule } from './organizations/organizations.module';
+import { RebacModule } from './rebac/rebac.module';
 import { SampleModule } from './sample/sample.module';
 import { TasksModule } from './tasks/tasks.module';
 import { UsersModule } from './users/users.module';
@@ -20,6 +21,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     OrganizationsModule,
     SampleModule,
+    RebacModule,
   ],
 })
 export class AppModule {}

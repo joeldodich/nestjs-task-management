@@ -7,4 +7,6 @@ export const configValidationSchema = Joi.object({
   AUTH0_AUDIENCE: Joi.string().required(),
   AUTH0_CLIENT_ID: Joi.string().required(),
   AUTH0_CLIENT_SECRET: Joi.string().required(),
+  HAIMDAL_API_URL: Joi.string().required(),
+  HAIMDAL_STORE_ID: Joi.string().required(),
 });

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { RebacService } from 'src/rebac/rebac.service';
 import { User } from 'src/users/user.model';
 import { UsersService } from 'src/users/users.service';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
@@ -13,9 +14,10 @@ export class OrganizationsService {
     private readonly organizationModel: Model<Organization>,
 
     private userService: UsersService,
+    private rebacService: RebacService,
   ) {}
 
-  async createOrganization(
+  async create(
     createOrganizationDto: CreateOrganizationDto,
     creatorId: User['id'],
   ): Promise<Organization> {
@@ -29,20 +31,11 @@ export class OrganizationsService {
       updatedAt: createdAt,
     };
     const organization = new this.organizationModel(payload);
+    
     return await organization.save();
   }
 
-  async getOrganizationById(id: Organization['_id']): Promise<Organization> {
-    const organization = await this.organizationModel.findById(id);
-    if (!organization) {
-      throw new NotFoundException(`Organization with ID of ${id} not found`);
-    }
-    return organization;
-  }
-
-  async 
-
-  async listMembers(id: Organization['_id']): Promise<User[]> {
+  async findAll(id: Organization['_id']): Promise<User[]> {
     const organization = await this.organizationModel.findById(id);
     if (!organization) {
         throw new NotFoundException(`Organization with ID of ${id} not found`);
@@ -50,5 +43,29 @@ export class OrganizationsService {
     const memberIds = organization.members as User['id'][];
     const members = await this.userService.findUsersByIds(memberIds);
     return members;
+  }
+
+  async findOne(id: Organization['_id']): Promise<Organization> {
+    const organization = await this.organizationModel.findById(id);
+    if (!organization) {
+      throw new NotFoundException(`Organization with ID of ${id} not found`);
+    }
+    return organization;
+  }
+
+  // create an async update method that takes any piece of the organization model and updates the organization with the given id
+  // async update(
+  //   id: Organization['_id'],
+  //   update: Partial<Organization>,
+  // ): Promise<Organization> {
+  //   await this.organizationModel.updateOne({ _id
+  //   : id }, update).exec();
+  //   return this.findOne(id);
+  // }
+
+
+
+  async remove(id: Organization['_id']): Promise<void> {
+    await this.organizationModel.deleteOne({ _id: id }).exec();
   }
 }

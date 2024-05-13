@@ -24,7 +24,7 @@ export class OrgGuard implements CanActivate {
       throw new UnauthorizedException('No valid token provided.');
     }
 
-    const org = await this.organizationService.getOrganizationById(orgId);
+    const org = await this.organizationService.findOne(orgId);
     const userIsAMember = org.members.some(
       (member) => member === request.user.id,
     );
